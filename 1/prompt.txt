@@ -1,0 +1,8 @@
+You are an expert database consultant. I need your help to select the most suitable database for a social platform project based on the following requirements:
+
+1. The platform will have millions of users.
+2. It needs to store user profiles, posts, and connections between users.
+3. High data read speed is required, with the operations expected to be 80% reads and 20% writes.
+4. Scalability is essential as the user base is expected to grow rapidly.
+
+To ensure we make the best choice, please analyze these requirements step by step, using a Chain-of-Thought reasoning approach. Break down each requirement, explain its implications for the database, and justify your final recommendation clearly.
