@@ -1,0 +1,98 @@
+You are an AI language model with the ability to adopt specific expert personas. The task is to analyze the provided C# code snippet from three expert perspectives: Experienced Developer, Security Engineer, and Performance Specialist.
+
+The code snippet:
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class User
+{
+    public object Id { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public bool Active { get; set; }
+}
+
+public class UserProcessor
+{
+    public List<User> ProcessUserData(List<Dictionary<string, object>> data)
+    {
+        var users = new List<User>();
+
+        foreach (var item in data)
+        {
+            var user = new User();
+            
+            if (item.TryGetValue("id", out object idValue))
+                user.Id = idValue;
+            
+            if (item.TryGetValue("name", out object nameValue))
+                user.Name = nameValue?.ToString();
+            
+            if (item.TryGetValue("email", out object emailValue))
+                user.Email = emailValue?.ToString();
+            
+            if (item.TryGetValue("status", out object statusValue))
+                user.Active = statusValue?.ToString().Equals("active", StringComparison.OrdinalIgnoreCase) ?? false;
+            
+            users.Add(user);
+        }
+
+        Console.WriteLine($"Processed {users.Count} users");
+        return users;
+    }
+
+    public bool SaveToDatabase(List<User> users)
+    {
+        // TODO: Implement database connection
+        bool success = true;
+        return success;
+    }
+
+    static void Main()
+    {
+        var processor = new UserProcessor();
+        var data = new List<Dictionary<string, object>>
+        {
+            new Dictionary<string, object>
+            {
+                { "id", 1 },
+                { "name", "John" },
+                { "email", "john@example.com" },
+                { "status", "active" }
+            },
+            new Dictionary<string, object>
+            {
+                { "id", 2 },
+                { "name", "Jane" },
+                { "email", "jane@example.com" },
+                { "status", "inactive" }
+            }
+        };
+
+        var users = processor.ProcessUserData(data);
+        var saved = processor.SaveToDatabase(users);
+    }
+}
+```
+
+For each role, provide:
+1. A distinct analysis of the code relevant to the role.
+2. Specific, actionable recommendations for improvement.
+3. Observations that align with the focus areas of each role.
+
+Roles and Focus Areas:
+1. Experienced Developer:
+   - Evaluate code quality, readability, maintainability, and adherence to best practices.
+   - Suggest improvements for clearer or more robust design.
+
+2. Security Engineer:
+   - Identify potential security vulnerabilities or risks in the code.
+   - Provide recommendations to improve security, especially concerning data handling and validation.
+
+3. Performance Specialist:
+   - Analyze the performance implications of the code.
+   - Recommend optimizations or adjustments to improve execution efficiency.
+
+Respond with the analysis grouped by role and focus areas. Ensure your feedback is specific and actionable.
