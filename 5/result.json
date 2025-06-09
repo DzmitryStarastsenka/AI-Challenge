@@ -1,0 +1,44 @@
+[
+  {
+    "sentiment": "Negative",
+    "isRelevant": true,
+    "mainSubject": "Performance and quality issues",
+    "positives": [],
+    "painPoints": [
+      "Sensor stops tracking intermittently",
+      "Issue persists even when plugged in",
+      "Defective dongle on the first unit",
+      "High price for a product with such issues"
+    ],
+    "improvementSuggestions": [
+      "Improve sensor reliability, especially at higher polling rates",
+      "Ensure better quality control for dongles and other components"
+    ],
+    "featuresMentioned": [
+      "Sensor",
+      "Polling rate",
+      "Dongle",
+      "Price"
+    ],
+    "userExpertise": "Unknown"
+  },
+  {
+    "sentiment": "Mixed",
+    "isRelevant": true,
+    "mainSubject": "Value for money",
+    "positives": [
+      "No flaws observed in the product performance"
+    ],
+    "painPoints": [
+      "High price not justified by the performance relative to cheaper alternatives"
+    ],
+    "improvementSuggestions": [
+      "Reduce price to align with comparable products in the market"
+    ],
+    "featuresMentioned": [
+      "Price",
+      "Performance"
+    ],
+    "userExpertise": "Unknown"
+  }
+]
