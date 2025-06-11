@@ -89,11 +89,39 @@ export class Game {
 
     console.log("\n--- CPU's Turn ---");
     
-    const moveResult = this.cpuPlayer.makeMove();
-    const location = moveResult.location;
+    // Get the CPU's location choice (but don't use its hit/miss result yet)
+    let location;
+    if (this.cpuPlayer.mode === 'target' && this.cpuPlayer.targetQueue.length > 0) {
+      location = this.cpuPlayer.targetQueue.shift();
+    } else {
+      this.cpuPlayer.mode = 'hunt';
+      location = this.cpuPlayer.generateRandomLocation();
+    }
     
-    // Process the move against human's board
+    // Process the move against human's board to get the REAL result
     const hitResult = this.humanPlayer.receiveMove(location);
+    
+    // Update CPU's tracking board to match the real result
+    const [row, col] = this.cpuPlayer.opponentBoard.parseLocation(location);
+    this.cpuPlayer.opponentBoard.grid[row][col] = hitResult.hit ? 'X' : 'O';
+    this.cpuPlayer.opponentBoard.guesses.add(location);
+    
+    // Update CPU's AI state based on the REAL result
+    if (hitResult.hit) {
+      this.cpuPlayer.lastHit = location;
+      if (hitResult.sunk) {
+        // Ship sunk, go back to hunt mode
+        this.cpuPlayer.mode = 'hunt';
+        this.cpuPlayer.targetQueue = [];
+      } else {
+        // Hit but not sunk, switch to target mode
+        this.cpuPlayer.mode = 'target';
+        this.cpuPlayer.addAdjacentTargets(location);
+      }
+    } else if (this.cpuPlayer.mode === 'target' && this.cpuPlayer.targetQueue.length === 0) {
+      // Miss in target mode and no more targets, go back to hunt
+      this.cpuPlayer.mode = 'hunt';
+    }
     
     let message = hitResult.hit ? `CPU HIT at ${location}!` : `CPU MISS at ${location}.`;
     if (hitResult.sunk) {
