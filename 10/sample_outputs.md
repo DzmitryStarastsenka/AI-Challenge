@@ -23,11 +23,7 @@ Type 'quit' to exit.
 What products are you looking for? I need electronics under $200 that are in stock
 
 Processing your request...
-Search criteria: {
-  "category": "Electronics",
-  "max_price": 200,
-  "in_stock_only": true
-}
+Search criteria used: Category is Electronics, price under $200, and must be in stock.
 
 Filtered Products:
 1. Wireless Headphones - $99.99, Rating: 4.5, In Stock
@@ -52,16 +48,11 @@ Filtered Products:
 What products are you looking for? Show me fitness equipment with rating above 4.5
 
 Processing your request...
-Search criteria: {
-  "category": "Fitness",
-  "min_rating": 4.5
-}
+Search criteria used: Filter for products in the Fitness category with rating above 4.5
 
 Filtered Products:
-1. Treadmill - $899.99, Rating: 4.6, Out of Stock
-2. Dumbbell Set - $149.99, Rating: 4.7, In Stock
-3. Exercise Bike - $499.99, Rating: 4.5, In Stock
-4. Foam Roller - $24.99, Rating: 4.5, In Stock
+1. Dumbbell Set - $149.99, Rating: 4.7, In Stock
+2. Exercise Bike - $499.99, Rating: 4.5, In Stock
 ```
 
 **Analysis**: The AI correctly identified:
@@ -78,121 +69,16 @@ Filtered Products:
 What products are you looking for? Find kitchen appliances between $50 and $150
 
 Processing your request...
-Search criteria: {
-  "category": "Kitchen",
-  "min_price": 50,
-  "max_price": 150
-}
+Search criteria used: Filtered kitchen appliances with prices between $50 and $150.
 
 Filtered Products:
 1. Air Fryer - $89.99, Rating: 4.6, In Stock
-2. Microwave Oven - $129.99, Rating: 4.5, Out of Stock
-3. Coffee Maker - $79.99, Rating: 4.3, In Stock
-4. Rice Cooker - $59.99, Rating: 4.3, In Stock
-5. Pressure Cooker - $99.99, Rating: 4.7, In Stock
+2. Pressure Cooker - $99.99, Rating: 4.7, In Stock
 ```
 
 **Analysis**: The AI correctly identified:
 - Category: Kitchen
 - Price range: Between $50 and $150 (min_price: 50, max_price: 150)
-
-## Sample Run 4: Books with Specific Keywords
-
-**User Query**: `"I want books about programming or science"`
-
-**Console Output**:
-```
-What products are you looking for? I want books about programming or science
-
-Processing your request...
-Search criteria: {
-  "category": "Books",
-  "keywords": ["programming", "science"]
-}
-
-Filtered Products:
-1. Programming Guide - $49.99, Rating: 4.7, In Stock
-2. History of Science - $39.99, Rating: 4.6, In Stock
-```
-
-**Analysis**: The AI correctly identified:
-- Category: Books
-- Keywords: ["programming", "science"]
-- The system found books containing these keywords in their names
-
-## Sample Run 5: Budget Clothing Items
-
-**User Query**: `"Show me clothing items under $30"`
-
-**Console Output**:
-```
-What products are you looking for? Show me clothing items under $30
-
-Processing your request...
-Search criteria: {
-  "category": "Clothing",
-  "max_price": 30
-}
-
-Filtered Products:
-1. Men's T-Shirt - $14.99, Rating: 4.2, In Stock
-2. Women's Sandals - $29.99, Rating: 4.2, In Stock
-3. Women's Scarf - $19.99, Rating: 4.3, In Stock
-4. Men's Socks - $9.99, Rating: 4.1, In Stock
-5. Women's Hat - $24.99, Rating: 4.4, In Stock
-```
-
-**Analysis**: The AI correctly identified:
-- Category: Clothing
-- Price constraint: Under $30 (max_price: 30)
-
-## Sample Run 6: Complex Multi-Criteria Search
-
-**User Query**: `"I need headphones with good ratings that are in stock"`
-
-**Console Output**:
-```
-What products are you looking for? I need headphones with good ratings that are in stock
-
-Processing your request...
-Search criteria: {
-  "keywords": ["headphones"],
-  "min_rating": 4.3,
-  "in_stock_only": true
-}
-
-Filtered Products:
-1. Wireless Headphones - $99.99, Rating: 4.5, In Stock
-2. Noise-Cancelling Headphones - $299.99, Rating: 4.8, In Stock
-```
-
-**Analysis**: The AI correctly identified:
-- Keywords: ["headphones"] to search for headphone products
-- Quality requirement: "good ratings" interpreted as min_rating: 4.3
-- Stock requirement: in_stock_only: true
-
-## Sample Run 7: No Results Found
-
-**User Query**: `"Find gaming laptops under $500 that are in stock"`
-
-**Console Output**:
-```
-What products are you looking for? Find gaming laptops under $500 that are in stock
-
-Processing your request...
-Search criteria: {
-  "keywords": ["gaming", "laptop"],
-  "max_price": 500,
-  "in_stock_only": true
-}
-
-No products found matching your criteria.
-```
-
-**Analysis**: The AI correctly structured the search but no products matched all criteria:
-- Gaming laptop costs $1299.99 (over budget)
-- Gaming laptop is out of stock
-- This demonstrates the system's ability to handle edge cases
 
 ## Key Observations
 
@@ -200,15 +86,13 @@ No products found matching your criteria.
 
 2. **Flexible Parameter Mapping**: Different query styles are handled appropriately:
    - Price ranges ("under $200", "between $50 and $150")
-   - Quality requirements ("good ratings", "rating above 4.5")
+   - Quality requirements ("rating above 4.5")
    - Availability ("in stock", "available")
    - Categories (explicitly mentioned or inferred)
 
-3. **Keyword Extraction**: The AI can identify product-specific terms and use them as search keywords.
+3. **AI-Powered Filtering**: OpenAI performs all filtering logic directly - no manual filtering code is used.
 
-4. **Edge Case Handling**: The system gracefully handles cases where no products match the criteria.
-
-5. **Consistent Output Format**: All results follow the same clear format for easy reading.
+4. **Consistent Output Format**: All results follow the same clear format for easy reading.
 
 ## Usage Tips
 

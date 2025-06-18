@@ -90,27 +90,26 @@ node demo.js
 ## How It Works
 
 1. **User Input**: You enter a natural language query describing what you're looking for
-2. **AI Processing**: The application sends your query to OpenAI's GPT-4 model along with the function schema
-3. **Function Calling**: The AI model analyzes your request and calls the `search_products` function with appropriate parameters
-4. **Filtering**: The application filters the product database based on the AI-generated criteria
-5. **Results**: Matching products are displayed in a structured format
+2. **AI Processing**: The application sends your query to OpenAI's GPT-4.1-mini model along with the complete product database
+3. **Function Calling**: The AI model analyzes your request, filters the products internally, and calls the `return_filtered_products` function with the matching products
+4. **Direct AI Filtering**: OpenAI performs all filtering logic - no manual filtering is done by the application
+5. **Results**: Matching products returned by OpenAI are displayed in a structured format
 
 ## Function Schema
 
-The application defines a `search_products` function with the following parameters:
+The application defines a `return_filtered_products` function that OpenAI uses to return matching products:
 
-- `category`: Product category (Electronics, Fitness, Kitchen, Books, Clothing)
-- `max_price`: Maximum price filter
-- `min_price`: Minimum price filter
-- `min_rating`: Minimum rating filter
-- `in_stock_only`: Filter for available products only
-- `keywords`: Array of keywords to search in product names
+- `matching_products`: Array of product objects that match the user's criteria
+  - Each product contains: name, category, price, rating, in_stock
+- `search_criteria_used`: Description of the criteria used to filter the products
+
+**Key Implementation Detail**: OpenAI receives the entire product database and performs all filtering internally. The application contains no manual filtering logic, fully complying with the task requirements.
 
 ## Sample Output Format
 
 ```
 Processing your request...
-Search criteria: {"category":"Electronics","max_price":200,"in_stock_only":true}
+Search criteria used: Electronics under $200 that are in stock
 
 Filtered Products:
 1. Wireless Headphones - $99.99, Rating: 4.5, In Stock
@@ -157,10 +156,12 @@ If you encounter rate limiting from OpenAI, wait a moment before making another 
 
 ## Technical Details
 
-- **Model**: Uses GPT-4 for natural language processing
-- **Function Calling**: Implements OpenAI's function calling feature
+- **Model**: Uses GPT-4.1-mini for natural language processing
+- **Function Calling**: Implements OpenAI's function calling feature with AI-powered filtering
 - **Data Format**: Products stored in JSON format with name, category, price, rating, and stock status
+- **Filtering Approach**: 100% AI-powered - OpenAI receives the full product database and performs all filtering
 - **Node.js Version**: Compatible with Node.js 14+
+- **Compliance**: Fully compliant with task requirements - no manual filtering logic
 
 ## License
 

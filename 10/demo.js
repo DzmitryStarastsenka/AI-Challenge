@@ -25,91 +25,36 @@ const products = JSON.parse(fs.readFileSync(path.join(__dirname, 'products.json'
 
 // Function schema for OpenAI function calling
 const productSearchFunction = {
-  name: "search_products",
-  description: "Search and filter products based on user preferences",
+  name: "return_filtered_products",
+  description: "Return a list of products that match the user's search criteria from the provided product database",
   parameters: {
     type: "object",
     properties: {
-      category: {
-        type: "string",
-        description: "Product category (Electronics, Fitness, Kitchen, Books, Clothing)",
-        enum: ["Electronics", "Fitness", "Kitchen", "Books", "Clothing"]
-      },
-      max_price: {
-        type: "number",
-        description: "Maximum price for the product"
-      },
-      min_price: {
-        type: "number",
-        description: "Minimum price for the product"
-      },
-      min_rating: {
-        type: "number",
-        description: "Minimum rating for the product"
-      },
-      in_stock_only: {
-        type: "boolean",
-        description: "Whether to include only products that are in stock"
-      },
-      keywords: {
+      matching_products: {
         type: "array",
-        items: { type: "string" },
-        description: "Keywords to search for in product names"
+        description: "Array of products that match the user's criteria",
+        items: {
+          type: "object",
+          properties: {
+            name: { type: "string", description: "Product name" },
+            category: { type: "string", description: "Product category" },
+            price: { type: "number", description: "Product price" },
+            rating: { type: "number", description: "Product rating" },
+            in_stock: { type: "boolean", description: "Whether product is in stock" }
+          },
+          required: ["name", "category", "price", "rating", "in_stock"]
+        }
+      },
+      search_criteria_used: {
+        type: "string",
+        description: "Description of the criteria used to filter the products"
       }
     },
-    required: []
+    required: ["matching_products", "search_criteria_used"]
   }
 };
 
-// Function to actually search products based on criteria
-function searchProducts(criteria) {
-  let filteredProducts = [...products];
-
-  // Filter by category
-  if (criteria.category) {
-    filteredProducts = filteredProducts.filter(product => 
-      product.category.toLowerCase() === criteria.category.toLowerCase()
-    );
-  }
-
-  // Filter by price range
-  if (criteria.max_price !== undefined) {
-    filteredProducts = filteredProducts.filter(product => 
-      product.price <= criteria.max_price
-    );
-  }
-
-  if (criteria.min_price !== undefined) {
-    filteredProducts = filteredProducts.filter(product => 
-      product.price >= criteria.min_price
-    );
-  }
-
-  // Filter by minimum rating
-  if (criteria.min_rating !== undefined) {
-    filteredProducts = filteredProducts.filter(product => 
-      product.rating >= criteria.min_rating
-    );
-  }
-
-  // Filter by stock availability
-  if (criteria.in_stock_only) {
-    filteredProducts = filteredProducts.filter(product => 
-      product.in_stock === true
-    );
-  }
-
-  // Filter by keywords
-  if (criteria.keywords && criteria.keywords.length > 0) {
-    filteredProducts = filteredProducts.filter(product => 
-      criteria.keywords.some(keyword => 
-        product.name.toLowerCase().includes(keyword.toLowerCase())
-      )
-    );
-  }
-
-  return filteredProducts;
-}
+// This function is removed - OpenAI will do the filtering directly
 
 // Function to format and display results
 function displayResults(products, queryDescription) {
@@ -133,22 +78,29 @@ async function runDemo(userInput, description) {
     console.log(`\nProcessing query: "${userInput}"`);
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4.1-mini",
       messages: [
         {
           role: "system",
-          content: `You are a product search assistant. Analyze user requests and call the search_products function with appropriate parameters to filter products. 
+          content: `You are a product search assistant. Analyze user requests and return matching products from the provided database using the return_filtered_products function.
           
-          Available product categories: Electronics, Fitness, Kitchen, Books, Clothing
+          Here is the complete product database:
+          ${JSON.stringify(products, null, 2)}
           
-          Consider these aspects when parsing user input:
+          Your task is to:
+          1. Understand the user's search criteria from their natural language input
+          2. Filter the products based on their requirements (price, category, rating, stock status, keywords)
+          3. Return only the products that match ALL specified criteria
+          4. Always call the return_filtered_products function with the matching products
+          
+          Consider these aspects when filtering:
           - Price ranges (under, over, between amounts)
-          - Product categories mentioned
+          - Product categories (Electronics, Fitness, Kitchen, Books, Clothing)
           - Quality requirements (ratings)
           - Stock availability needs
-          - Specific product types or features (as keywords)
+          - Specific product types or features (keywords in product names)
           
-          Always call the search_products function with the most appropriate criteria based on the user's natural language input.`
+          Return the actual product objects that match the criteria, not just criteria parameters.`
         },
         {
           role: "user",
@@ -156,19 +108,18 @@ async function runDemo(userInput, description) {
         }
       ],
       functions: [productSearchFunction],
-      function_call: { name: "search_products" }
+      function_call: { name: "return_filtered_products" }
     });
 
     const functionCall = completion.choices[0].message.function_call;
     
-    if (functionCall && functionCall.name === "search_products") {
-      const searchCriteria = JSON.parse(functionCall.arguments);
-      console.log("AI-generated search criteria:", JSON.stringify(searchCriteria, null, 2));
+    if (functionCall && functionCall.name === "return_filtered_products") {
+      const result = JSON.parse(functionCall.arguments);
+      console.log("Search criteria used:", result.search_criteria_used);
       
-      const results = searchProducts(searchCriteria);
-      displayResults(results, description);
+      displayResults(result.matching_products, description);
       
-      return results;
+      return result.matching_products;
     } else {
       console.log("Could not process the search request.");
       return [];
