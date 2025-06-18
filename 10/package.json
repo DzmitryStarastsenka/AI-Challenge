@@ -1,0 +1,23 @@
+{
+  "name": "product-search-ai",
+  "version": "1.0.0",
+  "description": "Product search tool using OpenAI function calling",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node demo.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "openai": "^4.104.0",
+    "readline": "^1.3.0"
+  },
+  "keywords": [
+    "openai",
+    "function-calling",
+    "product-search",
+    "ai"
+  ],
+  "author": "AI Challenge",
+  "license": "MIT"
+}
